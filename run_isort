@@ -1,1 +1,1 @@
-isort --recursive -p fdadb -sd THIRDPARTY -m 0 -w 120 -y -s venv -s .tox
+isort --recursive -p fdadb -sd THIRDPARTY -m 0 -w 120 -y -s venv -s .tox -s migrations
