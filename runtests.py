@@ -33,7 +33,7 @@ def flake8_main(args):
 def isort_main():
     print("Running isort code checking")
     ret = subprocess.call(["isort", "--recursive", "-p", "fdadb", "-sd", "THIRDPARTY", "-m", "0", "-w", "120", "-y",
-                           "-s", "venv", "-s", ".tox", "--check-only"])
+                           "-s", "venv", "-s", ".tox", "-s", "migrations", "--check-only"])
 
     if ret:
         print("isort failed: Some modules have incorrectly ordered imports. Fix by running `./run_isort`")
