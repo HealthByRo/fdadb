@@ -1,0 +1,23 @@
+sudo: false
+
+language: python
+
+python:
+  - "3.4"
+  - "3.5"
+  - "3.6"
+
+install:
+  - pip install tox tox-travis coverage codecov
+
+script:
+  - tox
+
+after_success:
+  - coverage report -m
+  - codecov
+
+notifications:
+  email:
+    recipients:
+      - eng@ro.co

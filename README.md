@@ -1,2 +1,0 @@
-# fdadb
-FDA drug database
