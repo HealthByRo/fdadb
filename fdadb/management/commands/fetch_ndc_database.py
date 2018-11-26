@@ -24,7 +24,7 @@ class Command(BaseCommand):
         # fetch the zip file from FDA site
         response = requests.get(FDA_NDC_DATABASE_URL)
         response.raise_for_status()
-        # extract and read products.xls from the archive
+        # extract and read product.txt from the archive
         buffer = BytesIO()
         buffer.write(response.content)
         z = zipfile.ZipFile(buffer)
