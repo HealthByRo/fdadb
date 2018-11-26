@@ -36,6 +36,10 @@ class Migration(migrations.Migration):
                 ('medication_name', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='fdadb.MedicationName')),
             ],
         ),
+        migrations.AlterModelOptions(
+            name='medicationname',
+            options={'ordering': ('name',)},
+        ),
         migrations.AddField(
             model_name='medicationndc',
             name='medication_strength',
