@@ -6,6 +6,9 @@ class MedicationName(models.Model):
     name = models.CharField(primary_key=True, max_length=255, help_text="Commercial Name (e.g. Viagra)")
     active_substances = JSONField(default=[], blank=True, help_text="List of active substances")
 
+    class Meta:
+        ordering = ("name",)
+
     def __str__(self):
         return self.name
 
