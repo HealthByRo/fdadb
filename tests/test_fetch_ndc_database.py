@@ -34,7 +34,7 @@ class FetchNdcDatabaseTestCase(TestCase):
         for model in (MedicationName, MedicationNDC, MedicationStrength):
             self.assertEqual(model.objects.count(), 0)
 
-        call_command(fetch_ndc_database.Command())
+        call_command("fetch_ndc_database")
         meds = {o.name: o for o in MedicationName.objects.all()}
         self.assertEqual(sorted(meds.keys()), ["Drug A Suffix A", "Drug B Suffix B"])
 

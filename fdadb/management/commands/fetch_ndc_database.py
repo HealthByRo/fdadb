@@ -34,8 +34,7 @@ class Command(BaseCommand):
 
         with z.open("product.txt") as f:
             f = TextIOWrapper(f, encoding="cp1252")
-            for row in csv.DictReader(f, delimiter="\t"):
-                yield row
+            yield from csv.DictReader(f, delimiter="\t")
 
     def get_medication_strength_data(self, product_data):
         # some product does not provide substance name
