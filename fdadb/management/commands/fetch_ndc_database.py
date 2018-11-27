@@ -1,7 +1,7 @@
+import csv
 import zipfile
-from io import BytesIO
+from io import BytesIO, TextIOWrapper
 
-import pandas
 import requests
 from django.conf import settings
 from django.core.management.base import BaseCommand
@@ -31,10 +31,11 @@ class Command(BaseCommand):
         buffer = BytesIO()
         buffer.write(self.fetch_database_file())
         z = zipfile.ZipFile(buffer)
-        products_data = pandas.read_table(z.open("product.txt"), encoding="cp1252",
-                                          keep_default_na=False, dtype=str).to_dict("records")
-        z.close()
-        return products_data
+
+        with z.open("product.txt") as f:
+            f = TextIOWrapper(f, encoding="cp1252")
+            for row in csv.DictReader(f, delimiter="\t"):
+                yield row
 
     def get_medication_strength_data(self, product_data):
         # some product does not provide substance name
