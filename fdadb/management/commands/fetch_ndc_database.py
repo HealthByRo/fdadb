@@ -20,13 +20,16 @@ def strip_list_items(items):
 class Command(BaseCommand):
     help = "Fetch the National Drug Codes and save the result to the database"
 
-    def get_products_data(self):
+    def fetch_database_file(self):
         # fetch the zip file from FDA site
         response = requests.get(FDA_NDC_DATABASE_URL)
         response.raise_for_status()
+        return response.content
+
+    def get_products_data(self):
         # extract and read product.txt from the archive
         buffer = BytesIO()
-        buffer.write(response.content)
+        buffer.write(self.fetch_database_file())
         z = zipfile.ZipFile(buffer)
         products_data = pandas.read_table(z.open("product.txt"), encoding="cp1252",
                                           keep_default_na=False, dtype=str).to_dict("records")
