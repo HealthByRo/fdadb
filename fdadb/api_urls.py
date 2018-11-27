@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import url
-from fdadb.api import MedicationNamesListAPI, MedicationStrengthsListAPI, MedicationNDCsListAPI
 
+from fdadb.api import MedicationNamesListAPI, MedicationNDCsListAPI, MedicationStrengthsListAPI
 
 urlpatterns = [
     url(r"^medications$", MedicationNamesListAPI.as_view(), name="fdadb-medications-names"),

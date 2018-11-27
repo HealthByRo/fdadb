@@ -10,6 +10,9 @@ def pytest_configure():
                 "NAME": ":memory:",
             }
         },
+        REST_FRAMEWORK={
+            "PAGE_SIZE": 10
+        },
         SECRET_KEY="not very secret in tests",
         USE_I18N=True,
         USE_L10N=True,

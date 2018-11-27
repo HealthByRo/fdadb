@@ -1,6 +1,7 @@
-from rest_framework.test import APITestCase
-from fdadb.models import MedicationName, MedicationStrength, MedicationNDC
 from rest_framework.reverse import reverse
+from rest_framework.test import APITestCase
+
+from fdadb.models import MedicationName, MedicationNDC, MedicationStrength
 
 
 class APITests(APITestCase):

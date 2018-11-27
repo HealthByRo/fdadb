@@ -1,2 +1,4 @@
 djangorestframework>=3.6.0
 django-extensions>=2.1.3
+drf-tweaks>=0.8.0
+elasticsearch>=6.3.1

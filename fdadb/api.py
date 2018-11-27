@@ -1,15 +1,18 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
 from rest_framework.generics import ListAPIView
-from rest_framework.permissions import AllowAny
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import AllowAny
+
 from fdadb.es_search import EsSearchAPI
-from fdadb.models import MedicationName, MedicationStrength, MedicationNDC
-from fdadb.serializers import MedicationNameSerializer, MedicationStrengthSerializer, MedicationNDCSerializer
+from fdadb.models import MedicationName, MedicationNDC, MedicationStrength
+from fdadb.serializers import MedicationNameSerializer, MedicationNDCSerializer, MedicationStrengthSerializer
+
+AUTOCOMPLETE_LIMIT = getattr(settings, "FDADB_AUTOCOMPLETE_LIMIT", 10)
 
 
 class SearchMixin(object):
-    def get_q_ans_es_enabled(self):
+    def get_q_and_es_enabled(self):
         es_enabled = bool(getattr(settings, "ELASTICSEARCH_URL", None) and not getattr(settings, "TESTING", False))
         q = None
         if hasattr(self, "request"):
@@ -20,24 +23,27 @@ class SearchMixin(object):
 
 class MedicationNamesListAPI(ListAPIView, SearchMixin):
     permission_classes = (AllowAny,)
+    # for now list of autocomplete results will be limited, so no pagination is needed
+    # TODO: add ES pagination
     pagination_class = PageNumberPagination
     queryset = MedicationName.objects.all()
     serializer_class = MedicationNameSerializer
     ordering = ("name",)
 
     def get_queryset(self):
-        q, es_enabled = self.get_q_ans_es_enabled()
+        q, es_enabled = self.get_q_and_es_enabled()
         if es_enabled:
-            count, objects_list = EsSearchAPI().search_name(q)  # FIXME: return count on paginator
+            count, objects_list = EsSearchAPI().search_name(q, AUTOCOMPLETE_LIMIT)
             return objects_list
         else:
             queryset = super().get_queryset()
             if q:
-                queryset = queryset.filter(name__icontains=q)
+                queryset = queryset.filter(name__icontains=q)[:AUTOCOMPLETE_LIMIT]
             return queryset
 
 
 class MedicationStrengthsListAPI(ListAPIView, SearchMixin):
+    # TODO: add filtering and use ES for the queryset (with pagination)
     permission_classes = (AllowAny,)
     pagination_class = PageNumberPagination
     queryset = MedicationStrength.objects.all()
@@ -45,20 +51,15 @@ class MedicationStrengthsListAPI(ListAPIView, SearchMixin):
     ordering = ("id",)
 
     def get_queryset(self):
-        q, es_enabled = self.get_q_ans_es_enabled()
-        if es_enabled:
-            count, objects_list = EsSearchAPI().search_strength(
-                self.kwargs["medication_name"], q
-            )  # FIXME: return count on paginator
-            return objects_list
-        else:
-            queryset = super().get_queryset().filter(medication_name__name=self.kwargs["medication_name"])
-            if q:
-                queryset = queryset.filter(strength__icontains=q)
-            return queryset
+        q, es_enabled = self.get_q_and_es_enabled()
+        queryset = super().get_queryset().filter(medication_name__name=self.kwargs["medication_name"])
+        if q:
+            queryset = queryset.filter(strength__icontains=q)
+        return queryset
 
 
 class MedicationNDCsListAPI(ListAPIView, SearchMixin):
+    # TODO: add filtering and use ES for the queryset (with pagination)
     permission_classes = (AllowAny,)
     pagination_class = PageNumberPagination
     queryset = MedicationNDC.objects.all()
@@ -66,21 +67,13 @@ class MedicationNDCsListAPI(ListAPIView, SearchMixin):
     ordering = ("id",)
 
     def get_queryset(self):
-        q, es_enabled = self.get_q_ans_es_enabled()
-        if es_enabled:
-            count, objects_list = EsSearchAPI().search_ndc(
-                self.kwargs["medication_name"], self.kwargs["strength_id"], q
-            )  # FIXME: return count on paginator
-            return objects_list
-        else:
-            queryset = (
-                super()
-                .get_queryset()
-                .filter(
-                    medication_strength__medication_name__name=self.kwargs["medication_name"],
-                    medication_strength_id=self.kwargs["strength_id"],
-                )
-            )
-            if q:
-                queryset = queryset.filter(manufacturer__icontains=q)
-            return queryset
+        q, es_enabled = self.get_q_and_es_enabled()
+        queryset = super().get_queryset()
+        queryset = queryset.filter(
+            medication_strength__medication_name__name=self.kwargs["medication_name"],
+            medication_strength_id=self.kwargs["strength_id"],
+        )
+
+        if q:
+            queryset = queryset.filter(manufacturer__icontains=q)
+        return queryset

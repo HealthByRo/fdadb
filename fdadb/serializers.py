@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from drf_tweaks.serializers import ModelSerializer
 from rest_framework.fields import CharField
-from fdadb.models import MedicationName, MedicationStrength, MedicationNDC
+
+from fdadb.models import MedicationName, MedicationNDC, MedicationStrength
 
 
 class JSONField(CharField):

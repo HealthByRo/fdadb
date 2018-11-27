@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
 from elasticsearch import Elasticsearch
-from fdadb.models import MedicationName, MedicationStrength, MedicationNDC
+
+from fdadb.models import MedicationName, MedicationNDC, MedicationStrength
 
 
 class EsSearchAPI(object):
@@ -33,7 +34,7 @@ class EsSearchAPI(object):
         )
         self.es.indices.create(
             index="fda_medications_strengths",
-            # ignore=[400],  # ignore 400, so it ignores already existing
+            ignore=[400],  # ignore 400, so it ignores already existing
             body={
                 "settings": {
                     "analysis": {
@@ -59,7 +60,7 @@ class EsSearchAPI(object):
         )
         self.es.indices.create(
             index="fda_medications_ndcs",
-            # ignore=[400],  # ignore 400, so it ignores already existing
+            ignore=[400],  # ignore 400, so it ignores already existing
             body={
                 "settings": {
                     "analysis": {
@@ -131,11 +132,11 @@ class EsSearchAPI(object):
     def _format_response(cls, response):
         return response["hits"]["total"], [x["_source"] for x in response["hits"]["hits"]]
 
-    def search_name(self, name_search_string):
+    def search_name(self, name_search_string, size=10):
         if not name_search_string:
-            body = {"query": {"match_all": {}}, "size": 10}
+            body = {"query": {"match_all": {}}, "size": size}
         else:
-            body = {"query": {"match": {"name": name_search_string}}, "size": 10}
+            body = {"query": {"match": {"name": name_search_string}}, "size": size}
         response = self.es.search(index="fda_medications_names", body=body)
         return self._format_response(response)
 
