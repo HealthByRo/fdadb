@@ -93,7 +93,7 @@ class EsSearchAPI(object):
 
     @classmethod
     def _get_strength_search_string(cls, strength):
-        return ", ".join(f"{key} {value['strength']} {value['unit']}" for key, value in strength.items())
+        return ", ".join("{} {} {}".format(key, value["strength"], value["unit"]) for key, value in strength.items())
 
     def index_medications(self, drop_indexes=False):
         if drop_indexes:
