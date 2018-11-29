@@ -17,7 +17,7 @@ class MedicationName(models.Model):
         if not isinstance(self.active_substances, list):
             return ""
 
-        return ", ". join(self.active_substances)
+        return ", ".join(self.active_substances)
 
 
 class MedicationStrength(models.Model):
@@ -26,14 +26,34 @@ class MedicationStrength(models.Model):
         “Sildenafil”: { “strength”: 3, “unit”: “mg/1” }
     }
     """
-    medication_name = models.ForeignKey("MedicationName", on_delete=models.CASCADE)
+    medication_name = models.ForeignKey("MedicationName", on_delete=models.CASCADE, related_name="strengths")
     strength = JSONField(default={}, blank=True, help_text=STRENGTH_HELP_TEXT)
+
+    @property
+    def name(self):
+        return self.medication_name.name
+
+    @property
+    def active_substances(self):
+        return self.medication_name.active_substances
 
 
 class MedicationNDC(models.Model):
-    medication_strength = models.ForeignKey("MedicationStrength", on_delete=models.CASCADE)
+    medication_strength = models.ForeignKey("MedicationStrength", on_delete=models.CASCADE, related_name="ndcs")
     ndc = models.CharField(max_length=12, unique=True, db_index=True)
     manufacturer = models.CharField(max_length=255, db_index=True)
 
     def __str__(self):
         return self.ndc
+
+    @property
+    def name(self):
+        return self.medication_strength.medication_name.name
+
+    @property
+    def active_substances(self):
+        return self.medication_strength.medication_name.active_substances
+
+    @property
+    def strength(self):
+        return self.medication_strength.strength

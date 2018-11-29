@@ -1,5 +1,6 @@
 import csv
 import zipfile
+from collections import OrderedDict
 from io import BytesIO, TextIOWrapper
 
 import requests
@@ -45,11 +46,11 @@ class Command(BaseCommand):
         active_substances = strip_list_items(substance_name.split(";"))
         substances_strength = strip_list_items(product_data["ACTIVE_NUMERATOR_STRENGTH"].split(";"))
         substances_units = strip_list_items(product_data["ACTIVE_INGRED_UNIT"].split(";"))
-        return {
+        return OrderedDict({
             active_substances[i]: {
                 "strength": substances_strength[i], "unit": substances_units[i]
             } for i in range(len(active_substances))
-        }
+        })
 
     def handle(self, *args, **options):
         # each product has following fields:
