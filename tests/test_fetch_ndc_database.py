@@ -39,9 +39,9 @@ class FetchNdcDatabaseTestCase(TestCase):
         self.assertEqual(sorted(meds.keys()), ["Drug A Suffix A", "Drug B Suffix B"])
 
         med_a = meds["Drug A Suffix A"]
-        self.assertEqual(med_a.active_substances, ["Substance A"])
+        self.assertEqual(sorted(med_a.active_substances), ["Substance A"])
         med_b = meds["Drug B Suffix B"]
-        self.assertEqual(med_b.active_substances, ["Substance B-1", "Substance B-2"])
+        self.assertEqual(sorted(med_b.active_substances), ["Substance B-1", "Substance B-2"])
 
         def strength_and_ndc_entries(medication_ndc):
             return (
