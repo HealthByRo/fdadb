@@ -81,7 +81,7 @@ class Command(BaseCommand):
         skipped = 0
         for i, product in enumerate(products_data):
             if (i % 100) == 0:
-                print(f"\rrow {i}", end="", flush=True)
+                print("\rrow %s" % i, end="", flush=True)
             if product["NDC_EXCLUDE_FLAG"] != "N":
                 skipped += 1
                 continue
@@ -91,20 +91,20 @@ class Command(BaseCommand):
             ).strip()
             strength_data = self.get_medication_strength_data(product)
             medication_name, created = cached_get_or_create(
-                f"name:{product_name}",
+                "name:%s" % (product_name,),
                 MedicationName,
                 name=product_name,
                 defaults={"active_substances": list(strength_data.keys())},
             )
             medication_strength, created = cached_get_or_create(
-                f"strength:{medication_name.name}-{strength_data}",
+                "strength:%s-%s" % (medication_name.name, strength_data),
                 MedicationStrength,
                 medication_name=medication_name,
                 strength=strength_data,
             )
             ndc = product["PRODUCTNDC"]
             cached_get_or_create(
-                f"ndc:{ndc}",
+                "ndc:%s" % (ndc,),
                 MedicationNDC,
                 ndc=ndc,
                 defaults={
@@ -112,4 +112,4 @@ class Command(BaseCommand):
                     "manufacturer": product["LABELERNAME"],
                 },
             )
-        print(f"\rDone.  {i} rows, {skipped} excluded drugs")
+        print("\rDone.  %d rows, %d excluded drugs" % (i, skipped))
