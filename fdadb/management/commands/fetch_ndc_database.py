@@ -53,13 +53,10 @@ class Command(BaseCommand):
             product_data["ACTIVE_INGRED_UNIT"].split(";")
         )
         return OrderedDict(
-            {
-                active_substances[i]: {
-                    "strength": substances_strength[i],
-                    "unit": substances_units[i],
-                }
-                for i in range(len(active_substances))
-            }
+            (substance, {"strength": strength, "unit": unit})
+            for substance, strength, unit in zip(
+                active_substances, substances_strength, substances_units
+            )
         )
 
     def handle(self, *args, **options):
