@@ -3,6 +3,19 @@ fdadb
 =========
 |travis|_ |pypi|_ |coveralls|_ |requiresio|_
 
+
+Manage.py commands:
+=========
+* ./manage.py fdadb_es_index - fetches products data from NDS DB and saves in our DB
+* ./manage.py fetch_ndc_database - Indexes Elastic search based on our DB
+
+
+API:
+=========
+* medications/ - Returns list of Medication Names objects
+* medications/(?P<medication_name>[\w-]+)/strengths - Returns list of Medication Strenghts objects
+* medications/(?P<medication_name>[\w-]+)/strengths/(?P<strength_id>[\d-]+)/ndcs - Returns list of Medication NDC objects
+
 Support
 =======
 * Django 1.11, 2.1, 2.2
