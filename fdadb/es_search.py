@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import json
+
 from django.conf import settings
 from elasticsearch import Elasticsearch
 
@@ -107,8 +109,8 @@ class EsSearchAPI(object):
         for medication_strength in MedicationStrength.objects.select_related("medication_name").all():
             doc = {
                 "name": medication_strength.medication_name.name,
-                "active_substances": medication_strength.medication_name.active_substances,
-                "strength": medication_strength.strength,
+                "active_substances": json.dumps(medication_strength.medication_name.active_substances),
+                "strength": json.dumps(medication_strength.strength),
                 "strength_search_string": self._get_strength_search_string(medication_strength.strength),
             }
             self.es.index(
@@ -120,8 +122,8 @@ class EsSearchAPI(object):
         ).all():
             doc = {
                 "name": medication_ndc.medication_strength.medication_name.name,
-                "active_substances": medication_ndc.medication_strength.medication_name.active_substances,
-                "strength": medication_ndc.medication_strength.strength,
+                "active_substances": json.dumps(medication_ndc.medication_strength.medication_name.active_substances),
+                "strength": json.dumps(medication_ndc.medication_strength.strength),
                 "strength_id": medication_ndc.medication_strength_id,
                 "ndc": medication_ndc.ndc,
                 "manufacturer": medication_ndc.manufacturer,
@@ -130,7 +132,12 @@ class EsSearchAPI(object):
 
     @classmethod
     def _format_response(cls, response):
-        return response["hits"]["total"], [x["_source"] for x in response["hits"]["hits"]]
+        count, results = response["hits"]["total"], [x["_source"] for x in response["hits"]["hits"]]
+        for item in results:
+            for key in ("strength", "active_substances"):
+                if key in item and isinstance(item[key], str):
+                    item[key] = json.loads(item[key])
+        return count, results
 
     def search_name(self, name_search_string, size=10):
         if not name_search_string:
