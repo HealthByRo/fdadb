@@ -15,7 +15,11 @@ class MedicationNameAdmin(admin.ModelAdmin):
         return False
 
     def has_change_permission(self, request, obj=None):
-        return False
+        if obj:
+            return False
+        
+        # allow listing medications in admin
+        return True
 
 
 admin.site.register(MedicationName, MedicationNameAdmin)
