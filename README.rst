@@ -1,7 +1,7 @@
 =====
 fdadb
 =====
-|travis|_ |pypi|_ |coveralls|_ |requiresio|_
+|travis|_ |pypi|_ |codecov|_ |requiresio|_
 
 A Django wrapper for `fda.gov <https://www.fda.gov>`_ National Drug Code (NDC) database.
 **fdadb** stores each row under one name **MedicationName** object instead of having multiple drugs with the same name
@@ -60,8 +60,8 @@ Support
 .. |pypi| image:: https://img.shields.io/pypi/v/fdadb.svg
 .. _pypi: https://pypi.python.org/pypi/fdadb
 
-.. |coveralls| image:: https://coveralls.io/repos/github/HealthByRo/fdadb/badge.svg?branch=master
-.. _coveralls: https://coveralls.io/github/HealthByRo/fdadb
+.. |codecov| image:: https://codecov.io/gh/HealthByRo/fdadb/branch/master/graph/badge.svg
+.. _codecov: https://codecov.io/gh/HealthByRo/fdadb
 
 .. |requiresio| image:: https://requires.io/github/HealthByRo/fdadb/requirements.svg?branch=master
 .. _requiresio: https://requires.io/github/HealthByRo/fdadb/requirements/
