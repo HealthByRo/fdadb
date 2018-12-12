@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
 from rest_framework.generics import ListAPIView
-from rest_framework.pagination import PageNumberPagination
+from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
 from rest_framework.permissions import AllowAny
 
 from fdadb.es_search import EsSearchAPI
@@ -25,7 +25,7 @@ class MedicationNamesListAPI(ListAPIView, SearchMixin):
     permission_classes = (AllowAny,)
     # for now list of autocomplete results will be limited, so no pagination is needed
     # TODO: add ES pagination
-    pagination_class = PageNumberPagination
+    pagination_class = LimitOffsetPagination
     queryset = MedicationName.objects.all()
     serializer_class = MedicationNameSerializer
     ordering = ("name",)

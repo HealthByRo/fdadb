@@ -19,7 +19,6 @@ def strip_list_items(items):
     return list(map(str.strip, items))
 
 
-# TODO: optimize and add tests
 class Command(BaseCommand):
     help = "Fetch the National Drug Codes and save the result to the database"
 
