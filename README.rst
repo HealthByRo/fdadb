@@ -42,7 +42,7 @@ ElasticSearch
 To enable support of ElasticSearch in autocomplete, set:
 
 * ``ELASTICSEARCH_URL`` in project configuration
-* Run ``./manage.py fdadb_es_index` after fetching the NDC database (use ``--drop_indexes`` in case you want to cleanup the medications index)
+* Run ``./manage.py fdadb_es_index`` after fetching the NDC database (use ``--drop_indexes`` in case you want to cleanup the medications index)
 
 Manage.py commands
 ==================
