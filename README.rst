@@ -2,9 +2,7 @@
 UNMAINTAINED
 ============
 
-**PLEASE NOTE**: this library is not actively maintained and receives
-only minimal updates necessary.  Most of it is no longer in active use
-at Ro.
+**PLEASE NOTE**: this library is no longer maintained and is archived.
 
 
 =====
